@@ -1,13 +1,11 @@
-SparkFun AS726X Arduino Library
+SparkFun AS7265X Arduino Library
 ========================================
-
-![AS726X](https://github.com/sparkfun/Sparkfun_AS726X_Arduino_Library/blob/master/extras/14351-01.jpg)
 
 [*AS7262 (14347)*](https://www.sparkfun.com/products/14347)
 
 [*AS7263 (14351)*](https://www.sparkfun.com/products/14351)
 
-This is an Arduino IDE library to control the AS726X Spectral Sensor, which can be configured via I<sup>2</sup>C or SPI.
+This is an Arduino IDE library to control the AS7265X Spectral Sensor, which can be configured via I<sup>2</sup>C.
 
 Repository Contents
 -------------------
@@ -20,18 +18,15 @@ Repository Contents
 
 Documentation
 --------------
-* **[Library](https://github.com/sparkfun/Qwiic_Spectral_Sensor_AS726X)** - C library for the AS726X.
-* **[Hookup Guide](https://learn.sparkfun.com/tutorials/as726x-nirvi)** - Basic hookup guide for the AS726X.
+* **[Library]()**- C library for the AS726X.
+* **[Hookup Guide]()** - Basic hookup guide for the AS726X.
 
 Product Versions
 ----------------
-* [14347](https://www.sparkfun.com/products/14347)- AS7262 Visible Spectral Sensor
-* [14351](https://www.sparkfun.com/products/14351)- AS7263 Near Infrared Spectral Sensor
+* 
 
 Version History
 ---------------
-* [V1.0.0](https://github.com/sparkfun/Sparkfun_AS726X_Arduino_Library/releases/tag/V1.0.0) - Initial Release
-* [V1.0.1](https://github.com/sparkfun/Sparkfun_AS726X_Arduino_Library/releases/tag/V1.0.1) - Updating printUncalibratedMeasurements()
 
 
 License Information
