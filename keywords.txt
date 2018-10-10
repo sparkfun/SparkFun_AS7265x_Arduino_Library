@@ -1,0 +1,109 @@
+########################################################
+# Syntax Coloring Map for SparkFun LSM6DS3 IMU Library #
+########################################################
+# Class
+###################################################################
+
+AS726X	KEYWORD1
+
+###################################################################
+# Methods and Functions
+###################################################################
+
+takeMeasurements	KEYWORD2
+takeMeasurementsWithBulb	KEYWORD2
+printMeasurements	KEYWORD2
+getTemperature	KEYWORD2
+getTemperatureF	KEYWORD2
+setMeasurementMode	KEYWORD2
+dataAvailable	KEYWORD2
+enableIndicator	KEYWORD2
+disableIndicatoR	KEYWORD2
+setIndicatorCurrent	KEYWORD2
+enableBulb	KEYWORD2
+disableBulb	KEYWORD2
+setBulbCurrent	KEYWORD2
+softReset	KEYWORD2
+setGain	KEYWORD2
+setIntegrationTime	KEYWORD2
+enableInterrupt	KEYWORD2
+disableInterrupt	KEYWORD2
+getViolet	KEYWORD2
+getBlue	KEYWORD2
+getGreen	KEYWORD2
+getYellow	KEYWORD2
+getOrange	KEYWORD2
+getRed	KEYWORD2
+getR	KEYWORD2
+getS	KEYWORD2
+getT	KEYWORD2
+getU	KEYWORD2
+getV	KEYWORD2
+getW	KEYWORD2
+getCalibratedViolet	KEYWORD2
+getCalibratedBlue	KEYWORD2
+getCalibratedGreen	KEYWORD2
+getCalibratedYellow	KEYWORD2
+getCalibratedOrange	KEYWORD2
+getCalibratedRed	KEYWORD2
+getCalibratedR	KEYWORD2
+getCalibratedS	KEYWORD2
+getCalibratedT	KEYWORD2
+getCalibratedU	KEYWORD2
+getCalibratedV	KEYWORD2
+getCalibratedW	KEYWORD2
+getChannel	KEYWORD2
+getCalibratedValue	KEYWORD2
+convertBytesToFloat	KEYWORD2
+clearDataAvailable	KEYWORD2
+virtualReadRegister	KEYWORD2
+virtualWriteRegister	KEYWORD2
+writeRegister	KEYWORD2
+readRegister	KEYWORD2
+###################################################################
+# Constants
+###################################################################
+
+_i2cPort	LITERAL1
+AS726X_ADDR	LITERAL1
+SENSORTYPE_AS7262	LITERAL1
+SENSORTYPE_AS7263	LITERAL1
+AS726x_DEVICE_TYPE	LITERAL1
+AS726x_HW_VERSION	LITERAL1
+AS726x_CONTROL_SETUP	LITERAL1
+AS726x_INT_T	LITERAL1
+AS726x_DEVICE_TEMP	LITERAL1
+AS726x_LED_CONTROL	LITERAL1
+AS72XX_SLAVE_STATUS_REG	LITERAL1
+AS72XX_SLAVE_WRITE_REG	LITERAL1
+AS72XX_SLAVE_READ_REG	LITERAL1
+AS7262_V	LITERAL1
+AS7262_B	LITERAL1
+AS7262_G	LITERAL1
+AS7262_Y	LITERAL1
+AS7262_O	LITERAL1
+AS7262_R	LITERAL1
+AS7262_V_CAL	LITERAL1
+AS7262_B_CAL	LITERAL1
+AS7262_G_CAL	LITERAL1
+AS7262_Y_CAL	LITERAL1
+AS7262_O_CAL	LITERAL1
+AS7262_R_CAL	LITERAL1
+AS7263_R	LITERAL1
+AS7263_S	LITERAL1
+AS7263_T	LITERAL1
+AS7263_U	LITERAL1
+AS7263_V	LITERAL1
+AS7263_W	LITERAL1
+AS7263_R_CAL	LITERAL1
+AS7263_S_CAL	LITERAL1
+AS7263_T_CAL	LITERAL1
+AS7263_U_CAL	LITERAL1
+AS7263_V_CAL	LITERAL1
+AS7263_W_CAL	LITERAL1
+AS72XX_SLAVE_TX_VALID	LITERAL1
+AS72XX_SLAVE_RX_VALID	LITERAL1
+SENSORTYPE_AS7262	LITERAL1
+SENSORTYPE_AS7263	LITERAL1
+POLLING_DELAY	LITERAL1
+_sensorVersion	LITERAL1
