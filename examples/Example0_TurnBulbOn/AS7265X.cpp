@@ -8,8 +8,6 @@ AS7265X::AS7265X()
 	
 }
 
-#define kevin
-#ifdef kevin
 void AS7265X::begin(TwoWire &wirePort)
 {
 	_i2cPort = &wirePort;
@@ -17,16 +15,13 @@ void AS7265X::begin(TwoWire &wirePort)
 //	Serial.begin(115200); TODO: remove prints from this library
 // there are no given default values for what the hw version should be so we can't check on that. 
 // //	_sensorVersion = virtualReadRegister(AS7265X_HW_VERSION);
+	setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72651_NIR);
+	setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72652_VISIBLE);
+	setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72653_UV);
 
-
-	setBulbCurrentAS72651(AS7265X_LED_CURRENT_LIMIT_12_5MA); //Set to 12.5mA (minimum)
-//	setBulbCurrentAS72652(AS7265X_LED_CURRENT_LIMIT_12_5MA); //Set to 12.5mA (minimum)
-//	setBulbCurrentAS72653(AS7265X_LED_CURRENT_LIMIT_12_5MA); //Set to 12.5mA (minimum)
-	
-	
-	disableBulbAS72651();
-//	disableBulbAS72652();
-//	disableBulbAS72653();
+	disableBulb(AS72651_NIR); 
+	disableBulb(AS72652_VISIBLE); 
+	disableBulb(AS72653_UV); 
 
 	setIndicatorCurrent(AS7265X_INDICATOR_CURRENT_LIMIT_8MA); //Set to 8mA (maximum)
 	disableIndicator(); //Turn off lights to save power
@@ -45,22 +40,17 @@ void AS7265X::begin(TwoWire &wirePort)
 		while (1); //Freeze!
 	}
 */
+
+
+	//TODO: return a boolean to force a spin when something goes wrong on the begin. 
 }
-#endif
-
-//Sets the measurement mode
-//Mode 0: Continuous reading of STUV (AS72651 NIR), GHKI (AS72652 VISIBLE), ABEC (AS72653 UV)
-//Mode 1: Continuous reading of RTUW (AS72651 NIR), GHJL (AS72652 VISIBLE), FABD (AS72653 UV)
-//Mode 2: Continuous reading of STUVRW (AS72651 NIR), GHKIJL (AS72652 VISIBLE), ABCDEF (AS72653 UV)
 
 
 
-
-#ifdef developing
 //Prints all measurements
 void AS7265X::printMeasurements()
 {
-
+/*
 	if (_sensorVersion == SENSORTYPE_AS7262)
 	{
 		//Visible readings
@@ -95,10 +85,13 @@ void AS7265X::printMeasurements()
 	}
 
 	Serial.println();
+*/
 }
+
 
 void AS7265X::printUncalibratedMeasurements()
 {
+/*
 
 	if (_sensorVersion == SENSORTYPE_AS7262)
 	{
@@ -134,6 +127,7 @@ void AS7265X::printUncalibratedMeasurements()
 	}
 
 	Serial.println();
+*/
 }
 
 //Tells IC to take all channel measurements and polls for data ready flag
@@ -170,20 +164,29 @@ void AS7265X::takeMeasurementsWithBulb()
 }
 
 //Get the various color readings
-int AS7265X::getViolet() { return(getChannel(AS7262_V)); }
-int AS7265X::getBlue() { return(getChannel(AS7262_B)); }
-int AS7265X::getGreen() { return(getChannel(AS7262_G)); }
-int AS7265X::getYellow() { return(getChannel(AS7262_Y)); }
-int AS7265X::getOrange() { return(getChannel(AS7262_O)); }
-int AS7265X::getRed() { return(getChannel(AS7262_R)); }
+int AS7265X::getG() { return(getChannel(AS7265X_R_G_A, AS72652_VISIBLE)); }
+int AS7265X::getH() { return(getChannel(AS7265X_S_H_B, AS72652_VISIBLE)); }
+int AS7265X::getI() { return(getChannel(AS7265X_T_I_C, AS72652_VISIBLE)); }
+int AS7265X::getJ() { return(getChannel(AS7265X_U_J_D, AS72652_VISIBLE)); }
+int AS7265X::getK() { return(getChannel(AS7265X_V_K_E, AS72652_VISIBLE)); }
+int AS7265X::getL() { return(getChannel(AS7265X_W_L_F, AS72652_VISIBLE)); }
 
 //Get the various NIR readings
-int AS7265X::getR() { return(getChannel(AS7263_R)); }
-int AS7265X::getS() { return(getChannel(AS7263_S)); }
-int AS7265X::getT() { return(getChannel(AS7263_T)); }
-int AS7265X::getU() { return(getChannel(AS7263_U)); }
-int AS7265X::getV() { return(getChannel(AS7263_V)); }
-int AS7265X::getW() { return(getChannel(AS7263_W)); }
+int AS7265X::getR() { return(getChannel(AS7265X_R_G_A, AS72651_NIR)); }
+int AS7265X::getS() { return(getChannel(AS7265X_S_H_B, AS72651_NIR)); }
+int AS7265X::getT() { return(getChannel(AS7265X_T_I_C, AS72651_NIR)); }
+int AS7265X::getU() { return(getChannel(AS7265X_U_J_D, AS72651_NIR)); }
+int AS7265X::getV() { return(getChannel(AS7265X_V_K_E, AS72651_NIR)); }
+int AS7265X::getW() { return(getChannel(AS7265X_W_L_F, AS72651_NIR)); }
+
+//Get the various UV readings
+int AS7265X::getA() { return(getChannel(AS7265X_R_G_A, AS72653_UV)); }
+int AS7265X::getB() { return(getChannel(AS7265X_S_H_B, AS72653_UV)); }
+int AS7265X::getC() { return(getChannel(AS7265X_T_I_C, AS72653_UV)); }
+int AS7265X::getD() { return(getChannel(AS7265X_U_J_D, AS72653_UV)); }
+int AS7265X::getE() { return(getChannel(AS7265X_V_K_E, AS72653_UV)); }
+int AS7265X::getF() { return(getChannel(AS7265X_W_L_F, AS72653_UV)); }
+
 
 //A the 16-bit value stored in a given channel registerReturns 
 int AS7265X::getChannel(byte channelRegister, byte device)
@@ -194,20 +197,30 @@ int AS7265X::getChannel(byte channelRegister, byte device)
 	return(colorData);
 }
 
-//Returns the various calibration data
-float AS7265X::getCalibratedViolet() { return(getCalibratedValue(AS7262_V_CAL)); }
-float AS7265X::getCalibratedBlue() { return(getCalibratedValue(AS7262_B_CAL)); }
-float AS7265X::getCalibratedGreen() { return(getCalibratedValue(AS7262_G_CAL)); }
-float AS7265X::getCalibratedYellow() { return(getCalibratedValue(AS7262_Y_CAL)); }
-float AS7265X::getCalibratedOrange() { return(getCalibratedValue(AS7262_O_CAL)); }
-float AS7265X::getCalibratedRed() { return(getCalibratedValue(AS7262_R_CAL)); }
 
-float AS7265X::getCalibratedR() { return(getCalibratedValue(AS7263_R_CAL)); }
-float AS7265X::getCalibratedS() { return(getCalibratedValue(AS7263_S_CAL)); }
-float AS7265X::getCalibratedT() { return(getCalibratedValue(AS7263_T_CAL)); }
-float AS7265X::getCalibratedU() { return(getCalibratedValue(AS7263_U_CAL)); }
-float AS7265X::getCalibratedV() { return(getCalibratedValue(AS7263_V_CAL)); }
-float AS7265X::getCalibratedW() { return(getCalibratedValue(AS7263_W_CAL)); }
+//Returns the various calibration data
+float AS7265X::getCalibratedA() { return(getCalibratedValue(AS7265X_R_G_A_CAL)); }
+float AS7265X::getCalibratedB() { return(getCalibratedValue(AS7265X_S_H_B_CAL)); }
+float AS7265X::getCalibratedC() { return(getCalibratedValue(AS7265X_T_I_C_CAL)); }
+float AS7265X::getCalibratedD() { return(getCalibratedValue(AS7265X_U_J_D_CAL)); }
+float AS7265X::getCalibratedE() { return(getCalibratedValue(AS7265X_V_K_E_CAL)); }
+float AS7265X::getCalibratedF() { return(getCalibratedValue(AS7265X_W_L_F_CAL)); }
+
+
+//Returns the various calibration data
+float AS7265X::getCalibratedG() { return(getCalibratedValue(AS7265X_R_G_A_CAL)); }
+float AS7265X::getCalibratedH() { return(getCalibratedValue(AS7265X_S_H_B_CAL)); }
+float AS7265X::getCalibratedI() { return(getCalibratedValue(AS7265X_T_I_C_CAL)); }
+float AS7265X::getCalibratedJ() { return(getCalibratedValue(AS7265X_U_J_D_CAL)); }
+float AS7265X::getCalibratedK() { return(getCalibratedValue(AS7265X_V_K_E_CAL)); }
+float AS7265X::getCalibratedL() { return(getCalibratedValue(AS7265X_W_L_F_CAL)); }
+
+float AS7265X::getCalibratedR() { return(getCalibratedValue(AS7265X_R_G_A_CAL)); }
+float AS7265X::getCalibratedS() { return(getCalibratedValue(AS7265X_S_H_B_CAL)); }
+float AS7265X::getCalibratedT() { return(getCalibratedValue(AS7265X_T_I_C_CAL)); }
+float AS7265X::getCalibratedU() { return(getCalibratedValue(AS7265X_U_J_D_CAL)); }
+float AS7265X::getCalibratedV() { return(getCalibratedValue(AS7265X_V_K_E_CAL)); }
+float AS7265X::getCalibratedW() { return(getCalibratedValue(AS7265X_W_L_F_CAL)); }
 
 //Given an address, read four bytes and return the floating point calibrated value
 float AS7265X::getCalibratedValue(byte calAddress)
@@ -227,19 +240,6 @@ float AS7265X::getCalibratedValue(byte calAddress)
 
 	return (convertBytesToFloat(calBytes));
 }
-
-
-
-
-
-
-
-
-
-
-#endif
-
-
 
 
 
@@ -322,9 +322,9 @@ void AS7265X::enableBulb(byte device)
 {
 	selectDevice(device);
 	//Read, mask/set, write
-	byte value = virtualReadRegister(AS7265X_LED_CONTROL);
+	byte value = virtualReadRegister(AS7265X_LED_CONFIG);
 	value |= (1 << 3); //Set the bit
-	virtualWriteRegister(AS7265X_LED_CONTROL, value);
+	virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
 //Disable the onboard 5700k or external incandescent bulb
@@ -333,9 +333,9 @@ void AS7265X::disableBulb(byte device)
 	//TODO: make sure valid device set?
 	selectDevice(device);
 	//Read, mask/set, write
-	byte value = virtualReadRegister(AS7265X_LED_CONTROL);
+	byte value = virtualReadRegister(AS7265X_LED_CONFIG);
 	value &= ~(1 << 3); //Clear the bit
-	virtualWriteRegister(AS7265X_LED_CONTROL, value);
+	virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
 //Set the current limit of bulb/LED.
@@ -351,7 +351,7 @@ void AS7265X::setBulbCurrent(byte current, byte device)
 	virtualWriteRegister(AS7265X_DEV_SELECT_CONTROL, device);
 	
 // set the current	
-	value = virtualReadRegister(AS7265X_LED_CONFIG); //Read
+	byte value = virtualReadRegister(AS7265X_LED_CONFIG); //Read
 	value &= 0b11001111; //Clear ICL_DRV bits
 	value |= (current << 4); //Set ICL_DRV bits with user's choice
 	virtualWriteRegister(AS7265X_LED_CONFIG, value); //Write
@@ -393,10 +393,12 @@ void AS7265X::setIndicatorCurrent(byte current)
 
 
 //Returns the temperature in C
+// all temps can be read but this is the master
+// TODO: make accessable for all temperatures
 //Pretty inaccurate: +/-8.5C
 byte AS7265X::getTemperature()
 {
-	return (virtualReadRegister(AS72653_DEVICE_TEMP));
+	return (virtualReadRegister(AS72651_DEVICE_TEMP));
 }
 
 //Does a soft reset

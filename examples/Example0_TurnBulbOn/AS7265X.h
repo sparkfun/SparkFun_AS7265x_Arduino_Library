@@ -72,13 +72,39 @@ public:
 	int getV();
 	int getW();
 
+	//Get the various UV readings
+	int getA();
+	int getB();
+	int getC();
+	int getD();
+	int getE();
+	int getF();
+
+	//Get the various VISIBLE readings
+	int getG();
+	int getH();
+	int getI();
+	int getJ();
+	int getK();
+	int getL();
+
+
+
 	//Returns the various calibration data
-	float getCalibratedViolet();
-	float getCalibratedBlue();
-	float getCalibratedGreen();
-	float getCalibratedYellow();
-	float getCalibratedOrange();
-	float getCalibratedRed();
+	float getCalibratedA();
+	float getCalibratedB();
+	float getCalibratedC();
+	float getCalibratedD();
+	float getCalibratedE();
+	float getCalibratedF();
+
+	float getCalibratedG();
+	float getCalibratedH();
+	float getCalibratedI();
+	float getCalibratedJ();
+	float getCalibratedK();
+	float getCalibratedL();
+
 
 	float getCalibratedR();
 	float getCalibratedS();
@@ -86,11 +112,15 @@ public:
 	float getCalibratedU();
 	float getCalibratedV();
 	float getCalibratedW();
+
+
+
+
 	byte readRegister(byte addr);
 private:
 	TwoWire *_i2cPort;
 	void selectDevice(byte device);
-	int getChannel(byte channelRegister);
+	int getChannel(byte channelRegister, byte device);
 	float getCalibratedValue(byte calAddress);
 	float convertBytesToFloat(uint32_t myLong);
 	boolean clearDataAvailable();
@@ -195,6 +225,12 @@ private:
 #define AS7265X_INDICATOR_CURRENT_LIMIT_4MA		0b10
 #define AS7265X_INDICATOR_CURRENT_LIMIT_8MA		0b11
 
+
+
+	//TODO: I know these are meaningless, it was just to see if things would compile, need to determine some logic for pringing the measurements. 
+#define SENSORTYPE_AS7261		0b01
+#define SENSORTYPE_AS7262		0b10
+#define SENSORTYPE_AS7263		0b11
 
 	byte _sensorVersion = 0;
 };

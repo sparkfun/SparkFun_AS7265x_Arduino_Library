@@ -79,9 +79,9 @@ AS7265X sensor;
 
 void setup() {
   sensor.begin();
-  sensor.setBulbCurrentAS72651(AS7265X_LED_CURRENT_LIMIT_25MA);
-  sensor.setBulbCurrentAS72652(AS7265X_LED_CURRENT_LIMIT_25MA);
-  sensor.setBulbCurrentAS72653(AS7265X_LED_CURRENT_LIMIT_25MA);
+  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72651_NIR);
+  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72652_VISIBLE);
+  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72653_UV);
 
   Serial.begin(9600);
   Serial.println("started");
