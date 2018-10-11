@@ -90,18 +90,16 @@ void setup() {
 }
 
 void loop() {
-  delay(100);
-  //sensor.enableBulbAS72651(); // lets make it 0x07 for the register. 
-  //sensor.enableBulbAS72652(); // lets make it 0x07 for the register. 
- // sensor.enableBulb(AS72651_DEV_SELECT_NIR); // lets make it 0x07 for the register. 
-  sensor.enableBulb(0x02); // lets make it 0x07 for the register. 
-  sensor.enableBulb(0x01); // lets make it 0x07 for the register. 
-  sensor.enableBulb(0x00); // lets make it 0x07 for the register. 
-  //sensor.enableBulb(AS72652_DEV_SELECT_VISIBLE); // lets make it 0x07 for the register. 
-  delay(100);
- // sensor.enableBulbAS72651();
-  //sensor.enableBulbAS72652();
- // sensor.enableBulbAS72653();
+	Serial.print("got J:\t");
+	Serial.println(sensor.getJ());
 
-  //sensor.disableBulbAS72652();
+	Serial.print("got K:\t");
+	Serial.println(sensor.getK());
+
+	Serial.print("got L:\t");
+	Serial.println(sensor.getL());
+
+
+	delay(100);
 }
+
