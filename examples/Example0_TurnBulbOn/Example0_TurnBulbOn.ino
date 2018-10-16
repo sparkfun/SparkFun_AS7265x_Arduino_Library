@@ -73,33 +73,93 @@
   float getCalibratedW();
 */
 
-#include "AS7265X.h"
-//#include "Users/kevin.kuwata/Documents/GitHub/SparkFun_AS7265x_Arduino_Library/src/AS7265X.h"
+#include "SparkFun_AS7265X.h" //Click here to get the library: http://librarymanager/All#SparkFun_AS7265X
 AS7265X sensor;
 
 void setup() {
-  sensor.begin();
-  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72651_NIR);
-  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72652_VISIBLE);
-  sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72653_UV);
+  Serial.begin(115200);
+  Serial.println("AS7265x Spectral Triad Example");
 
-  Serial.begin(9600);
-  Serial.println("started");
-  Serial.println("reading status register");
-  Serial.print(sensor.readRegister(AS7265X_STATUS_REG), BIN);
+  if(sensor.begin() == false)
+  {
+    Serial.println("Sensor does not appear to be connected. Please check wiring. Freezing...");
+    while(1);
+  }
+  
+/*  Serial.print("HW verH: 0x");
+  Serial.print(sensor.virtualReadRegister(AS72651_HW_VERSION_HIGH), HEX);
+  Serial.println(sensor.virtualReadRegister(AS72651_HW_VERSION_LOW), HEX);
+
+  Serial.print("FW Min: 0x");
+  Serial.println(sensor.virtualReadRegister(AS72651_FW_VERSION_MINOR), HEX);
+
+  Serial.print("FW Maj: 0x");
+  Serial.println(sensor.virtualReadRegister(AS72651_FW_VERSION_MAJOR), HEX);
+*/
+  //Serial.print("Temp: 0x");
+  //Serial.println(sensor.getTemperature());
+
+  //Serial.print("TempAvg: 0x");
+  //Serial.println(sensor.getTemperatureAverage());
+
+  Serial.print("Integration time: ");
+  Serial.println(sensor.virtualReadRegister(AS7265X_INTERGRATION_TIME));
+
+  sensor.setIntegrationTime(100);
+
+  Serial.print("Integration time: ");
+  Serial.println(sensor.virtualReadRegister(AS7265X_INTERGRATION_TIME));
+
+  //sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72651_NIR);
+  //sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72652_VISIBLE);
+  //sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS72653_UV);
+
+  Serial.println("A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W");
 }
 
 void loop() {
-	Serial.print("got J:\t");
-	Serial.println(sensor.getJ());
+  sensor.takeMeasurements(); //This is a hard wait while all 18 channels are measured
 
-	Serial.print("got K:\t");
-	Serial.println(sensor.getK());
+  Serial.print(sensor.getCalibratedA());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedB());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedC());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedD());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedE());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedF());
+  Serial.print(",");
 
-	Serial.print("got L:\t");
-	Serial.println(sensor.getL());
+  Serial.print(sensor.getCalibratedG());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedH());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedI());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedJ());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedK());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedL());
+  Serial.print(",");
 
+  Serial.print(sensor.getCalibratedR());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedS());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedT());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedU());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedV());
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedW());
+  Serial.print(",");
 
-	delay(100);
+  Serial.println();
+
 }
 
