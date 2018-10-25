@@ -73,8 +73,6 @@
 #define AS7265X_COEF_DATA_READ    0x54
 #define AS7265X_COEF_DATA_WRITE   0x55
 
-#define AS7265X_I2C_CAL_SEL   0x3F
-
 //Settings 
 
 #define AS7265X_POLLING_DELAY 5 //Amount of ms to wait between checking for virtual register changes
@@ -203,8 +201,6 @@ class AS7265X {
 
     uint8_t readRegister(uint8_t addr);
     boolean writeRegister(uint8_t addr, uint8_t val);
-
-    uint8_t _sensorVersion = 0;
 };
 
 #endif

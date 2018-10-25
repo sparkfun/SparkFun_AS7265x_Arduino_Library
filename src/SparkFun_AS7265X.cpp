@@ -100,8 +100,6 @@ uint8_t AS7265X::getBuildFirmwareVersion()
   return(virtualReadRegister(AS7265X_FW_VERSION_LOW));
 }
 
-
-
 //Returns true if I2C device ack's
 boolean AS7265X::isConnected()
 {
@@ -110,8 +108,6 @@ boolean AS7265X::isConnected()
     return (false); //Sensor did not ACK
   return (true);
 }
-
-
 
 //Tells IC to take all channel measurements and polls for data ready flag
 void AS7265X::takeMeasurements()
