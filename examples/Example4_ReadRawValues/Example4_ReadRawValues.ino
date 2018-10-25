@@ -6,8 +6,8 @@
   License: MIT. See license file for more information but you can
   basically do whatever you want with this code.
 
-  This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-  them to the serial port.
+  This example shows how to output the raw sensor values. This is probably never needed since the 
+  calibrated values are tuned to each sensor. But it does run faster (2 bytes per channel instead of 4)
   
   Feel like supporting open source hardware?
   Buy a board from SparkFun! https://www.sparkfun.com/products/15050
@@ -21,6 +21,8 @@
 #include "SparkFun_AS7265X.h" //Click here to get the library: http://librarymanager/All#SparkFun_AS7265X
 AS7265X sensor;
 
+#include <Wire.h>
+
 void setup() {
   Serial.begin(9600);
   Serial.println("AS7265x Spectral Triad Example");
@@ -30,50 +32,55 @@ void setup() {
     Serial.println("Sensor does not appear to be connected. Please check wiring. Freezing...");
     while(1);
   }
-  
+
+  //Once the sensor is started we can increase the I2C speed
+  Wire.setClock(400000);
+
+  sensor.disableIndicator();
+
   Serial.println("A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W");
 }
 
 void loop() {
-  sensor.takeMeasurements(); //This is a hard wait while all 18 channels are measured
+  sensor.takeMeasurementsWithBulb(); //This is a hard wait while all 18 channels are measured
 
-  Serial.print(sensor.getCalibratedA());
+  Serial.print(sensor.getA());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedB());
+  Serial.print(sensor.getB());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedC());
+  Serial.print(sensor.getC());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedD());
+  Serial.print(sensor.getD());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedE());
+  Serial.print(sensor.getE());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedF());
-  Serial.print(",");
-
-  Serial.print(sensor.getCalibratedG());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedH());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedI());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedJ());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedK());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedL());
+  Serial.print(sensor.getF());
   Serial.print(",");
 
-  Serial.print(sensor.getCalibratedR());
+  Serial.print(sensor.getG());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedS());
+  Serial.print(sensor.getH());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedT());
+  Serial.print(sensor.getI());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedU());
+  Serial.print(sensor.getJ());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedV());
+  Serial.print(sensor.getK());
   Serial.print(",");
-  Serial.print(sensor.getCalibratedW());
+  Serial.print(sensor.getL());
+  Serial.print(",");
+
+  Serial.print(sensor.getR());
+  Serial.print(",");
+  Serial.print(sensor.getS());
+  Serial.print(",");
+  Serial.print(sensor.getT());
+  Serial.print(",");
+  Serial.print(sensor.getU());
+  Serial.print(",");
+  Serial.print(sensor.getV());
+  Serial.print(",");
+  Serial.print(sensor.getW());
   Serial.print(",");
 
   Serial.println();

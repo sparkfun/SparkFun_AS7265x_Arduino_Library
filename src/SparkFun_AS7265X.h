@@ -1,18 +1,14 @@
 /*
-  This is a library written for the Ublox NEO-M8P-2
+  This is a library written for the AMS AS7265x Spectral Triad (Moonlight)
   SparkFun sells these at its website: www.sparkfun.com
   Do you like this library? Help support SparkFun. Buy a board!
-  https://www.sparkfun.com/products/14586
+  https://www.sparkfun.com/products/15050
 
-  Written by Nathan Seidle @ SparkFun Electronics, September 6th, 2018
+  Written by Nathan Seidle & Kevin Kuwata @ SparkFun Electronics, October 25th, 2018
 
-  The NEO-M8P-2 is a powerful GPS receiver capable of calculating correction data
-  to achieve 2cm accuracy.
+  The Spectral Triad is a three sensor platform to do 18-channel spectroscopy.
 
-  This library handles the configuration of 'survey-in', RTCM messages, and to output
-  the RTCM messages to the user's selected stream
-
-  https://github.com/sparkfun/SparkFun_RTK_Arduino_Library
+  https://github.com/sparkfun/SparkFun_AS7265X_Arduino_Library
 
   Development environment specifics:
   Arduino IDE 1.8.5
@@ -40,18 +36,16 @@
 #define AS7265X_TX_VALID    0x02
 #define AS7265X_RX_VALID    0x01
 
-#define AS72651_NIR     0x00
-#define AS72652_VISIBLE     0x01
-#define AS72653_UV      0x02
-
 //Register addresses
-#define AS72651_HW_VERSION_HIGH   0x00
-#define AS72651_HW_VERSION_LOW    0x01
-#define AS72651_FW_VERSION_MINOR  0x02
-#define AS72651_FW_VERSION_MAJOR  0x03
+#define AS7265X_HW_VERSION_HIGH   0x00
+#define AS7265X_HW_VERSION_LOW    0x01
+
+#define AS7265X_FW_VERSION_HIGH  0x02
+#define AS7265X_FW_VERSION_LOW  0x03
+
 #define AS7265X_CONFIG      0x04
 #define AS7265X_INTERGRATION_TIME 0x05
-#define AS72651_DEVICE_TEMP     0x06
+#define AS7265X_DEVICE_TEMP     0x06
 #define AS7265X_LED_CONFIG    0x07
 
 //Raw channel registers
@@ -85,6 +79,14 @@
 
 #define AS7265X_POLLING_DELAY 5 //Amount of ms to wait between checking for virtual register changes
 
+#define AS72651_NIR     0x00
+#define AS72652_VISIBLE     0x01
+#define AS72653_UV      0x02
+
+#define AS7265x_LED_WHITE	0x00 //White LED is connected to x51
+#define AS7265x_LED_IR	0x01 //IR LED is connected to x52
+#define AS7265x_LED_UV	0x02 //UV LED is connected to x53
+
 #define AS7265X_LED_CURRENT_LIMIT_12_5MA  0b00
 #define AS7265X_LED_CURRENT_LIMIT_25MA    0b01
 #define AS7265X_LED_CURRENT_LIMIT_50MA    0b10
@@ -95,84 +97,54 @@
 #define AS7265X_INDICATOR_CURRENT_LIMIT_4MA   0b10
 #define AS7265X_INDICATOR_CURRENT_LIMIT_8MA   0b11
 
+#define AS7265X_GAIN_1X   0b00
+#define AS7265X_GAIN_37X   0b01
+#define AS7265X_GAIN_16X   0b10
+#define AS7265X_GAIN_64X   0b11
+
+#define AS7265X_MEASUREMENT_MODE_4CHAN   0b00
+#define AS7265X_MEASUREMENT_MODE_4CHAN_2   0b01
+#define AS7265X_MEASUREMENT_MODE_6CHAN_CONTINUOUS   0b10
+#define AS7265X_MEASUREMENT_MODE_6CHAN_ONE_SHOT   0b11
+
 class AS7265X {
   public:
     AS7265X();
+
     boolean begin(TwoWire &wirePort = Wire);
     boolean isConnected(); //Checks if sensor ack's the I2C request
+	
+	uint8_t getDeviceType();
+	uint8_t getHardwareVersion();
+	uint8_t getMajorFirmwareVersion();
+	uint8_t getPatchFirmwareVersion();
+	uint8_t getBuildFirmwareVersion();
 
     uint8_t getTemperature(uint8_t deviceNumber = 0); //Get temp in C of the master IC
     float getTemperatureAverage(); //Get average of all three ICs
 
     void takeMeasurements();
     void takeMeasurementsWithBulb();
-    void printMeasurements();
-    void printUncalibratedMeasurements();
 
-    /* Everything in here has been looked at already and should be ready for a test */
-    /*==============================================================================*/
-
-
-    void enableIndicator(); //only on the AS72651
+    void enableIndicator(); //Blue status LED
     void disableIndicator();
 
     void enableBulb(uint8_t device);
     void disableBulb(uint8_t device);
 
-    void setBulbCurrent(uint8_t current, uint8_t device);
+    void setGain(uint8_t gain); //1 to 64x
+    void setMeasurementMode(uint8_t mode); //4 channel, other 4 channel, 6 chan, or 6 chan one shot
+    void setIntegrationCycles(uint8_t cycleValue);
 
-    void setMeasurementMode(uint8_t mode); //writes to 0x04
-
-    void setGain(uint8_t gain);
+    void setBulbCurrent(uint8_t current, uint8_t device); //
+    void setIndicatorCurrent(uint8_t current); //0 to 8mA
 
     void enableInterrupt();
     void disableInterrupt();
 
     void softReset();
 
-    void setIndicatorCurrent(uint8_t current);
-
-    /*==============================================================================*/
-
-    boolean dataAvailable();
-
-    void enableBulb();
-    void disableBulb();
-    void setBulbCurrent(uint8_t current);
-
-    void setIntegrationTime(uint8_t integrationValue);
-
-    //Get the various color readings
-    uint16_t getViolet();
-    uint16_t getBlue();
-    uint16_t getGreen();
-    uint16_t getYellow();
-    uint16_t getOrange();
-    uint16_t getRed();
-
-    //Get the various NIR readings
-    uint16_t getR();
-    uint16_t getS();
-    uint16_t getT();
-    uint16_t getU();
-    uint16_t getV();
-    uint16_t getW();
-
-    //Get the various UV readings
-    uint16_t getA();
-    uint16_t getB();
-    uint16_t getC();
-    uint16_t getD();
-    uint16_t getE();
-    uint16_t getF();
-
-    //Get the various VISIBLE readings
-    uint16_t getG();
-    uint16_t getH();
-    uint16_t getI();
-    uint16_t getJ();
-    uint16_t getK();
-    uint16_t getL();
+    boolean dataAvailable(); //Returns true when data is available
 
     //Returns the various calibration data
     float getCalibratedA();
@@ -196,16 +168,38 @@ class AS7265X {
     float getCalibratedV();
     float getCalibratedW();
 
-    uint8_t virtualReadRegister(uint8_t virtualAddr);
-    void virtualWriteRegister(uint8_t virtualAddr, uint8_t dataToWrite);
-    void selectDevice(uint8_t device);
+    //Get the various raw readings
+    uint16_t getA();
+    uint16_t getB();
+    uint16_t getC();
+    uint16_t getD();
+    uint16_t getE();
+    uint16_t getF();
+
+    uint16_t getG();
+    uint16_t getH();
+    uint16_t getI();
+    uint16_t getJ();
+    uint16_t getK();
+    uint16_t getL();
+
+    uint16_t getR();
+    uint16_t getS();
+    uint16_t getT();
+    uint16_t getU();
+    uint16_t getV();
+    uint16_t getW();
 
   private:
     TwoWire *_i2cPort;
     uint16_t getChannel(uint8_t channelRegister, uint8_t device);
     float getCalibratedValue(uint8_t calAddress);
     float convertBytesToFloat(uint32_t myLong);
-    boolean clearDataAvailable();
+
+    void selectDevice(uint8_t device); //Change between the x51, x52, or x53 for data and settings
+
+    uint8_t virtualReadRegister(uint8_t virtualAddr);
+    void virtualWriteRegister(uint8_t virtualAddr, uint8_t dataToWrite);
 
     uint8_t readRegister(uint8_t addr);
     boolean writeRegister(uint8_t addr, uint8_t val);

@@ -6,8 +6,8 @@
   License: MIT. See license file for more information but you can
   basically do whatever you want with this code.
 
-  This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-  them to the serial port.
+  This example takes all 18 readings and blinks the illumination LEDs 
+  as it goes. We recommend you point the Triad away from your eyes, the LEDs are *bright*.
   
   Feel like supporting open source hardware?
   Buy a board from SparkFun! https://www.sparkfun.com/products/15050
@@ -21,21 +21,29 @@
 #include "SparkFun_AS7265X.h" //Click here to get the library: http://librarymanager/All#SparkFun_AS7265X
 AS7265X sensor;
 
+#include <Wire.h>
+
 void setup() {
   Serial.begin(9600);
   Serial.println("AS7265x Spectral Triad Example");
+
+  Serial.println("Point the Triad away and press a key to begin with illumination...");
+  while(Serial.available() == false) {} //Do nothing while we wait for user to press a key
+  Serial.read(); //Throw away the user's button
 
   if(sensor.begin() == false)
   {
     Serial.println("Sensor does not appear to be connected. Please check wiring. Freezing...");
     while(1);
   }
-  
+
+  sensor.disableIndicator(); //Turn off the blue status LED
+
   Serial.println("A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W");
 }
 
 void loop() {
-  sensor.takeMeasurements(); //This is a hard wait while all 18 channels are measured
+  sensor.takeMeasurementsWithBulb(); //This is a hard wait while all 18 channels are measured
 
   Serial.print(sensor.getCalibratedA());
   Serial.print(",");

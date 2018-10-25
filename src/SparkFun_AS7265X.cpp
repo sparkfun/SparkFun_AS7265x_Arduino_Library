@@ -1,18 +1,14 @@
 /*
-  This is a library written for the Ublox NEO-M8P-2
+  This is a library written for the AMS AS7265x Spectral Triad (Moonlight)
   SparkFun sells these at its website: www.sparkfun.com
   Do you like this library? Help support SparkFun. Buy a board!
-  https://www.sparkfun.com/products/14586
+  https://www.sparkfun.com/products/15050
 
-  Written by Nathan Seidle @ SparkFun Electronics, September 6th, 2018
+  Written by Nathan Seidle & Kevin Kuwata @ SparkFun Electronics, October 25th, 2018
 
-  The NEO-M8P-2 is a powerful GPS receiver capable of calculating correction data
-  to achieve 2cm accuracy.
+  The Spectral Triad is a three sensor platform to do 18-channel spectroscopy.
 
-  This library handles the configuration of 'survey-in', RTCM messages, and to output
-  the RTCM messages to the user's selected stream
-
-  https://github.com/sparkfun/SparkFun_RTK_Arduino_Library
+  https://github.com/sparkfun/SparkFun_AS7265X_Arduino_Library
 
   Development environment specifics:
   Arduino IDE 1.8.5
@@ -40,37 +36,71 @@ AS7265X::AS7265X()
 boolean AS7265X::begin(TwoWire &wirePort)
 {
   _i2cPort = &wirePort;
-  _i2cPort->begin(); //This reset any setClock() the user may have done
+  _i2cPort->begin(); //This resets any setClock() the user may have done
 
   if (isConnected() == false) return (false); //Check for sensor presence
 
   //Check to see if both slaves are detected
   uint8_t value = virtualReadRegister(AS7265X_DEV_SELECT_CONTROL);
-  if (value & 0b00110000 == 0b00110000) return (false); //These bits should be set. Slaves not detected!
+  if ( (value & 0b00110000) == 0) return (false); //Test if Slave1 and 2 are detected. If not, bail.
 
-  // there are no given default values for what the hw version should be so we can't check on that.
-  // //	_sensorVersion = virtualReadRegister(AS7265X_HW_VERSION);
+  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS7265x_LED_WHITE);
+  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS7265x_LED_IR);
+  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS7265x_LED_UV);
 
-  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72651_NIR);
-  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72652_VISIBLE);
-  setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_12_5MA, AS72653_UV);
-
-  disableBulb(AS72651_NIR);
-  disableBulb(AS72652_VISIBLE);
-  disableBulb(AS72653_UV);
+  disableBulb(AS7265x_LED_WHITE); //Turn off bulb to avoid heating sensor
+  disableBulb(AS7265x_LED_IR);
+  disableBulb(AS7265x_LED_UV);
 
   setIndicatorCurrent(AS7265X_INDICATOR_CURRENT_LIMIT_8MA); //Set to 8mA (maximum)
-  disableIndicator(); //Turn off lights to save power
+  enableIndicator();
 
-  setIntegrationTime(50); //50 * 2.8ms = 140ms. 0 to 255 is valid.
+  setIntegrationCycles(49); //50 * 2.8ms = 140ms. 0 to 255 is valid.
   //If you use Mode 2 or 3 (all the colors) then integration time is double. 140*2 = 280ms between readings.
 
-  setGain(3); //Set gain to 64x
+  setGain(AS7265X_GAIN_64X); //Set gain to 64x
 
-  setMeasurementMode(3); //One-shot reading of VBGYOR
+  setMeasurementMode(AS7265X_MEASUREMENT_MODE_6CHAN_ONE_SHOT); //One-shot reading of VBGYOR
+  
+  enableInterrupt();
 
   return (true); //We're all setup!
 }
+
+uint8_t AS7265X::getDeviceType()
+{
+  return(virtualReadRegister(AS7265X_HW_VERSION_HIGH));
+}
+uint8_t AS7265X::getHardwareVersion()
+{
+  return(virtualReadRegister(AS7265X_HW_VERSION_LOW));
+}
+
+uint8_t AS7265X::getMajorFirmwareVersion()
+{
+  virtualWriteRegister(AS7265X_FW_VERSION_HIGH, 0x01); //Set to 0x01 for Major
+  virtualWriteRegister(AS7265X_FW_VERSION_LOW, 0x01); //Set to 0x01 for Major
+  
+  return(virtualReadRegister(AS7265X_FW_VERSION_LOW));
+}
+
+uint8_t AS7265X::getPatchFirmwareVersion()
+{
+  virtualWriteRegister(AS7265X_FW_VERSION_HIGH, 0x02); //Set to 0x02 for Patch
+  virtualWriteRegister(AS7265X_FW_VERSION_LOW, 0x02); //Set to 0x02 for Patch
+  
+  return(virtualReadRegister(AS7265X_FW_VERSION_LOW));
+}
+
+uint8_t AS7265X::getBuildFirmwareVersion()
+{
+  virtualWriteRegister(AS7265X_FW_VERSION_HIGH, 0x03); //Set to 0x03 for Build
+  virtualWriteRegister(AS7265X_FW_VERSION_LOW, 0x03); //Set to 0x03 for Build
+  
+  return(virtualReadRegister(AS7265X_FW_VERSION_LOW));
+}
+
+
 
 //Returns true if I2C device ack's
 boolean AS7265X::isConnected()
@@ -86,34 +116,26 @@ boolean AS7265X::isConnected()
 //Tells IC to take all channel measurements and polls for data ready flag
 void AS7265X::takeMeasurements()
 {
-  setMeasurementMode(3); //Set mode to all 6-channels, one-shot
+  setMeasurementMode(AS7265X_MEASUREMENT_MODE_6CHAN_ONE_SHOT); //Set mode to all 6-channels, one-shot
 
   //Wait for data to be ready
   while (dataAvailable() == false) delay(AS7265X_POLLING_DELAY);
 
-  //Readings can now be accessed via getViolet(), getBlue(), etc
+  //Readings can now be accessed via getCalibratedA(), getJ(), etc
 }
 
 //Turns on all bulbs, takes measurements of all channels, turns off all bulbs
 void AS7265X::takeMeasurementsWithBulb()
 {
-  /* TODO: so takeMeasurements takes all channels. but how do we cycle the led's on?
-   	I would think we would want to turn on the VISIBLE, measure, UV - measure, then NIR measure.
-    	I guess that doesn't make sense because in all modes of operation multiple channels are being set.
-    	so maybe we turn on all led's then take a measurement. after all this is a spectral analysis
-    	and the light will def be separated.
-   * */
-
-  enableBulb(AS72651_NIR);
-  enableBulb(AS72652_VISIBLE);
-  enableBulb(AS72653_UV);
-  //TODO: turn on 1 bulb and loop. or turn on all bulbs?
+  enableBulb(AS7265x_LED_WHITE);
+  enableBulb(AS7265x_LED_IR);
+  enableBulb(AS7265x_LED_UV);
 
   takeMeasurements();
 
-  disableBulb(AS72651_NIR); //Turn off bulb to avoid heating sensor
-  disableBulb(AS72652_VISIBLE);
-  disableBulb(AS72653_UV);
+  disableBulb(AS7265x_LED_WHITE); //Turn off bulb to avoid heating sensor
+  disableBulb(AS7265x_LED_IR);
+  disableBulb(AS7265x_LED_UV);
 }
 
 //Get the various color readings
@@ -264,6 +286,14 @@ float AS7265X::getCalibratedValue(uint8_t calAddress)
   return (convertBytesToFloat(calBytes));
 }
 
+//Given 4 bytes returns the floating point value
+float AS7265X::convertBytesToFloat(uint32_t myLong)
+{
+  float myFloat;
+  memcpy(&myFloat, &myLong, 4); //Copy bytes into a float
+  return (myFloat);
+}
+
 //Mode 0: 4 channels out of 6 (see datasheet)
 //Mode 1: Different 4 channels out of 6 (see datasheet)
 //Mode 2: All 6 channels continuously
@@ -295,12 +325,12 @@ void AS7265X::setGain(uint8_t gain)
   virtualWriteRegister(AS7265X_CONFIG, value); //Write
 }
 
-//Sets the integration value
+//Sets the integration cycle amount
 //Give this function a byte from 0 to 255.
-//Time will be 2.8ms * [integration value]
-void AS7265X::setIntegrationTime(uint8_t integrationValue)
+//Time will be 2.8ms * [integration cycles + 1]
+void AS7265X::setIntegrationCycles(uint8_t cycleValue)
 {
-  virtualWriteRegister(AS7265X_INTERGRATION_TIME, integrationValue); //Write
+  virtualWriteRegister(AS7265X_INTERGRATION_TIME, cycleValue); //Write
 }
 
 void AS7265X::enableInterrupt()
@@ -327,28 +357,22 @@ boolean AS7265X::dataAvailable()
   return (value & (1 << 1)); //Bit 1 is DATA_RDY
 }
 
-//Given 4 bytes returns the floating point value
-float AS7265X::convertBytesToFloat(uint32_t myLong)
-{
-  float myFloat;
-  memcpy(&myFloat, &myLong, 4); //Copy bytes into a float
-  return (myFloat);
-}
-
-//Enable the onboard 5700k or external incandescent bulb
+//Enable the LED or bulb on a given device
 void AS7265X::enableBulb(uint8_t device)
 {
   selectDevice(device);
+
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value |= (1 << 3); //Set the bit
   virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
-//Disable the onboard 5700k or external incandescent bulb
+//Disable the LED or bulb on a given device
 void AS7265X::disableBulb(uint8_t device)
 {
   selectDevice(device);
+
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value &= ~(1 << 3); //Clear the bit
@@ -362,12 +386,10 @@ void AS7265X::disableBulb(uint8_t device)
 //Current 3: 100mA
 void AS7265X::setBulbCurrent(uint8_t current, uint8_t device)
 {
-  if (current > 0b11) current = 0b11; //Limit to two bits
-  //Select which device to configure
-  // bits 5/6 are read only, a direct write yields the desired outcome.
-  virtualWriteRegister(AS7265X_DEV_SELECT_CONTROL, device);
+  selectDevice(device);
 
   // set the current
+  if (current > 0b11) current = 0b11; //Limit to two bits
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG); //Read
   value &= 0b11001111; //Clear ICL_DRV bits
   value |= (current << 4); //Set ICL_DRV bits with user's choice
@@ -420,7 +442,7 @@ void AS7265X::setIndicatorCurrent(uint8_t current)
 uint8_t AS7265X::getTemperature(uint8_t deviceNumber)
 {
   selectDevice(deviceNumber);
-  return (virtualReadRegister(AS72651_DEVICE_TEMP));
+  return (virtualReadRegister(AS7265X_DEVICE_TEMP));
 }
 
 //Returns an average of all the sensor temps in C
@@ -514,7 +536,7 @@ uint8_t AS7265X::readRegister(uint8_t addr)
   _i2cPort->write(addr);
   if (_i2cPort->endTransmission() != 0)
   {
-    Serial.println("No ack!");
+    //Serial.println("No ack!");
     return (0); //Device failed to ack
   }
 
@@ -523,7 +545,7 @@ uint8_t AS7265X::readRegister(uint8_t addr)
     return (_i2cPort->read());
   }
 
-  Serial.println("No ack!");
+  //Serial.println("No ack!");
   return (0); //Device failed to respond
 }
 
@@ -535,7 +557,7 @@ boolean AS7265X::writeRegister(uint8_t addr, uint8_t val)
   _i2cPort->write(val);
   if (_i2cPort->endTransmission() != 0)
   {
-    Serial.println("No ack!");
+    //Serial.println("No ack!");
     return (false); //Device failed to ack
   }
 
