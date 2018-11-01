@@ -1,7 +1,7 @@
 SparkFun Triad Spectroscopy Sensor - AS7265x (Qwiic)
 ===========================================================
 
-[![SparkFun Triad Spectroscopy Sensor](https://cdn.sparkfun.com//assets/parts/1/3/3/2/0/15005-SparkFun_GPS-RTK__Qwiic__-_NEO-M8P-2-00.jpg)](https://www.sparkfun.com/products/15005)
+[![SparkFun Triad Spectroscopy Sensor](https://cdn.sparkfun.com//assets/parts/1/3/3/9/3/15050-SparkFun_Triad_Spectroscopy_Sensor_-_AS7265x__Qwiic_-01.jpg)](https://www.sparkfun.com/products/15050)
 
 [*SparkFun Triad Spectroscopy Sensor (SEN-15050)*](https://www.sparkfun.com/products/15050)
 
