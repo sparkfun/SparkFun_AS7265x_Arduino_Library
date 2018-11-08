@@ -22,6 +22,7 @@ Repository Contents
 Documentation
 --------------
 * **[Arduino Library](https://github.com/sparkfun/SparkFun_AS7265x_Arduino_Library)** - Arduino Library for the SparkFun Triad Spectroscopy Sensor.
+* **[GitHub Product Repo](https://github.com/sparkfun/Qwiic_Spectral_Sensor_AS7265x)** - Product repo for the SparkFun Triad Spectroscopy Sensor.
 * **[Hookup Guide](https://learn.sparkfun.com/tutorials/spectral-triad-as7265x-hookup-guide)** - Basic hookup guide for the SparkFun Triad Spectroscopy Sensor.
 
 License Information
