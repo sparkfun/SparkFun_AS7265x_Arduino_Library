@@ -205,67 +205,69 @@ uint16_t AS7265X::getChannel(uint8_t channelRegister, uint8_t device)
 
 //Returns the various calibration data
 float AS7265X::getCalibratedA() {
-  return (getCalibratedValue(AS7265X_R_G_A_CAL));
+  return (getCalibratedValue(AS7265X_R_G_A_CAL, AS72653_UV));
 }
 float AS7265X::getCalibratedB() {
-  return (getCalibratedValue(AS7265X_S_H_B_CAL));
+  return (getCalibratedValue(AS7265X_S_H_B_CAL, AS72653_UV));
 }
 float AS7265X::getCalibratedC() {
-  return (getCalibratedValue(AS7265X_T_I_C_CAL));
+  return (getCalibratedValue(AS7265X_T_I_C_CAL, AS72653_UV));
 }
 float AS7265X::getCalibratedD() {
-  return (getCalibratedValue(AS7265X_U_J_D_CAL));
+  return (getCalibratedValue(AS7265X_U_J_D_CAL, AS72653_UV));
 }
 float AS7265X::getCalibratedE() {
-  return (getCalibratedValue(AS7265X_V_K_E_CAL));
+  return (getCalibratedValue(AS7265X_V_K_E_CAL, AS72653_UV));
 }
 float AS7265X::getCalibratedF() {
-  return (getCalibratedValue(AS7265X_W_L_F_CAL));
+  return (getCalibratedValue(AS7265X_W_L_F_CAL, AS72653_UV));
 }
 
 
 //Returns the various calibration data
 float AS7265X::getCalibratedG() {
-  return (getCalibratedValue(AS7265X_R_G_A_CAL));
+  return (getCalibratedValue(AS7265X_R_G_A_CAL, AS72652_VISIBLE));
 }
 float AS7265X::getCalibratedH() {
-  return (getCalibratedValue(AS7265X_S_H_B_CAL));
+  return (getCalibratedValue(AS7265X_S_H_B_CAL, AS72652_VISIBLE));
 }
 float AS7265X::getCalibratedI() {
-  return (getCalibratedValue(AS7265X_T_I_C_CAL));
+  return (getCalibratedValue(AS7265X_T_I_C_CAL, AS72652_VISIBLE));
 }
 float AS7265X::getCalibratedJ() {
-  return (getCalibratedValue(AS7265X_U_J_D_CAL));
+  return (getCalibratedValue(AS7265X_U_J_D_CAL, AS72652_VISIBLE));
 }
 float AS7265X::getCalibratedK() {
-  return (getCalibratedValue(AS7265X_V_K_E_CAL));
+  return (getCalibratedValue(AS7265X_V_K_E_CAL, AS72652_VISIBLE));
 }
 float AS7265X::getCalibratedL() {
-  return (getCalibratedValue(AS7265X_W_L_F_CAL));
+  return (getCalibratedValue(AS7265X_W_L_F_CAL, AS72652_VISIBLE));
 }
 
 float AS7265X::getCalibratedR() {
-  return (getCalibratedValue(AS7265X_R_G_A_CAL));
+  return (getCalibratedValue(AS7265X_R_G_A_CAL, AS72651_NIR));
 }
 float AS7265X::getCalibratedS() {
-  return (getCalibratedValue(AS7265X_S_H_B_CAL));
+  return (getCalibratedValue(AS7265X_S_H_B_CAL, AS72651_NIR));
 }
 float AS7265X::getCalibratedT() {
-  return (getCalibratedValue(AS7265X_T_I_C_CAL));
+  return (getCalibratedValue(AS7265X_T_I_C_CAL, AS72651_NIR));
 }
 float AS7265X::getCalibratedU() {
-  return (getCalibratedValue(AS7265X_U_J_D_CAL));
+  return (getCalibratedValue(AS7265X_U_J_D_CAL, AS72651_NIR));
 }
 float AS7265X::getCalibratedV() {
-  return (getCalibratedValue(AS7265X_V_K_E_CAL));
+  return (getCalibratedValue(AS7265X_V_K_E_CAL, AS72651_NIR));
 }
 float AS7265X::getCalibratedW() {
-  return (getCalibratedValue(AS7265X_W_L_F_CAL));
+  return (getCalibratedValue(AS7265X_W_L_F_CAL, AS72651_NIR));
 }
 
 //Given an address, read four bytes and return the floating point calibrated value
-float AS7265X::getCalibratedValue(uint8_t calAddress)
+float AS7265X::getCalibratedValue(uint8_t calAddress, uint8_t device)
 {
+  selectDevice(device);
+
   uint8_t b0, b1, b2, b3;
   b0 = virtualReadRegister(calAddress + 0);
   b1 = virtualReadRegister(calAddress + 1);

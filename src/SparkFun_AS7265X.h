@@ -191,7 +191,7 @@ class AS7265X {
   private:
     TwoWire *_i2cPort;
     uint16_t getChannel(uint8_t channelRegister, uint8_t device);
-    float getCalibratedValue(uint8_t calAddress);
+    float getCalibratedValue(uint8_t calAddress, uint8_t device);
     float convertBytesToFloat(uint32_t myLong);
 
     void selectDevice(uint8_t device); //Change between the x51, x52, or x53 for data and settings
