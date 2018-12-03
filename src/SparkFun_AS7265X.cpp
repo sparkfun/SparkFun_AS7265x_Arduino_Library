@@ -412,6 +412,8 @@ void AS7265X::enableIndicator()
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value |= (1 << 0); //Set the bit
+
+  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
@@ -421,6 +423,8 @@ void AS7265X::disableIndicator()
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value &= ~(1 << 0); //Clear the bit
+
+  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
@@ -432,6 +436,8 @@ void AS7265X::setIndicatorCurrent(uint8_t current)
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG); //Read
   value &= 0b11111001; //Clear ICL_IND bits
   value |= (current << 1); //Set ICL_IND bits with user's choice
+
+  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value); //Write
 }
 
