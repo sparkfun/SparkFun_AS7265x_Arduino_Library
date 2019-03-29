@@ -11,6 +11,12 @@ The SparkFun Triad Spectroscopy Sensor is a powerful optical inspection sensor. 
 
 What can you do with light spectroscopy? It’s an amazing field of study, and the SparkFun Triad brings what used to be prohibitively expensive equipment to the desktop. The AS7265x should not be confused with highly complex mass spectrometers, but the sensor array does give the user the ability to measure and characterize how different materials absorb and reflect 18 different frequencies of light.
 
+Want to use this board using python? Checkout hwreverse [pySectralTriad](https://github.com/hwreverse/pySpectralTriad)!
+
+**Thanks to:**
+
+* **pySpectralTriad** for the python application
+
 Repository Contents
 -------------------
 
