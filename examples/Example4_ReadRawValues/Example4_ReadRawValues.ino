@@ -38,49 +38,49 @@ void setup() {
 
   sensor.disableIndicator();
 
-  Serial.println("A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W");
+  Serial.println("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L");
 }
 
 void loop() {
-  sensor.takeMeasurementsWithBulb(); //This is a hard wait while all 18 channels are measured
+  sensor.takeMeasurements(); //This is a hard wait while all 18 channels are measured
 
-  Serial.print(sensor.getA());
+  Serial.print(sensor.getA()); //410nm
   Serial.print(",");
-  Serial.print(sensor.getB());
+  Serial.print(sensor.getB()); //435nm
   Serial.print(",");
-  Serial.print(sensor.getC());
+  Serial.print(sensor.getC()); //460nm
   Serial.print(",");
-  Serial.print(sensor.getD());
+  Serial.print(sensor.getD()); //485nm
   Serial.print(",");
-  Serial.print(sensor.getE());
+  Serial.print(sensor.getE()); //510nm
   Serial.print(",");
-  Serial.print(sensor.getF());
-  Serial.print(",");
-
-  Serial.print(sensor.getG());
-  Serial.print(",");
-  Serial.print(sensor.getH());
-  Serial.print(",");
-  Serial.print(sensor.getI());
-  Serial.print(",");
-  Serial.print(sensor.getJ());
-  Serial.print(",");
-  Serial.print(sensor.getK());
-  Serial.print(",");
-  Serial.print(sensor.getL());
+  Serial.print(sensor.getF()); //535nm
   Serial.print(",");
 
-  Serial.print(sensor.getR());
+  Serial.print(sensor.getG()); //560nm
   Serial.print(",");
-  Serial.print(sensor.getS());
+  Serial.print(sensor.getH()); //585nm
   Serial.print(",");
-  Serial.print(sensor.getT());
+  Serial.print(sensor.getR()); //610nm
   Serial.print(",");
-  Serial.print(sensor.getU());
+  Serial.print(sensor.getI()); //645nm
   Serial.print(",");
-  Serial.print(sensor.getV());
+  Serial.print(sensor.getS()); //680nm
   Serial.print(",");
-  Serial.print(sensor.getW());
+  Serial.print(sensor.getJ()); //705nm
+  Serial.print(",");
+
+  Serial.print(sensor.getT()); //730nm
+  Serial.print(",");
+  Serial.print(sensor.getU()); //760nm
+  Serial.print(",");
+  Serial.print(sensor.getV()); //810nm
+  Serial.print(",");
+  Serial.print(sensor.getW()); //860nm
+  Serial.print(",");
+  Serial.print(sensor.getK()); //900nm
+  Serial.print(",");
+  Serial.print(sensor.getL()); //940nm
   Serial.print(",");
 
   Serial.println();

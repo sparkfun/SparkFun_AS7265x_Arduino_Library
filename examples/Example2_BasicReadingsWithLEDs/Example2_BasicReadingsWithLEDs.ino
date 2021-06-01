@@ -39,49 +39,49 @@ void setup() {
 
   sensor.disableIndicator(); //Turn off the blue status LED
 
-  Serial.println("A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W");
+  Serial.println("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L");
 }
 
 void loop() {
   sensor.takeMeasurementsWithBulb(); //This is a hard wait while all 18 channels are measured
 
-  Serial.print(sensor.getCalibratedA());
+  Serial.print(sensor.getCalibratedA()); //410nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedB());
+  Serial.print(sensor.getCalibratedB()); //435nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedC());
+  Serial.print(sensor.getCalibratedC()); //460nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedD());
+  Serial.print(sensor.getCalibratedD()); //485nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedE());
+  Serial.print(sensor.getCalibratedE()); //510nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedF());
-  Serial.print(",");
-
-  Serial.print(sensor.getCalibratedG());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedH());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedI());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedJ());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedK());
-  Serial.print(",");
-  Serial.print(sensor.getCalibratedL());
+  Serial.print(sensor.getCalibratedF()); //535nm
   Serial.print(",");
 
-  Serial.print(sensor.getCalibratedR());
+  Serial.print(sensor.getCalibratedG()); //560nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedS());
+  Serial.print(sensor.getCalibratedH()); //585nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedT());
+  Serial.print(sensor.getCalibratedR()); //610nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedU());
+  Serial.print(sensor.getCalibratedI()); //645nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedV());
+  Serial.print(sensor.getCalibratedS()); //680nm
   Serial.print(",");
-  Serial.print(sensor.getCalibratedW());
+  Serial.print(sensor.getCalibratedJ()); //705nm
+  Serial.print(",");
+
+  Serial.print(sensor.getCalibratedT()); //730nm
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedU()); //760nm
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedV()); //810nm
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedW()); //860nm
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedK()); //900nm
+  Serial.print(",");
+  Serial.print(sensor.getCalibratedL()); //940nm
   Serial.print(",");
 
   Serial.println();
