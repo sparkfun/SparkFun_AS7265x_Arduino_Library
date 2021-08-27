@@ -108,6 +108,9 @@ boolean AS7265X::isConnected()
   for (uint8_t x = 0; x < 100; x++)
   {
     _i2cPort->beginTransmission((uint8_t)AS7265X_ADDR);
+#ifdef ENERGIA
+    _i2cPort->write(0x00); //See issue: https://github.com/sparkfun/SparkFun_AS7265x_Arduino_Library/issues/4
+#endif
     if (_i2cPort->endTransmission() == 0)
       return (true); //Sensor ACK'd
     delay(10);
