@@ -455,28 +455,32 @@ void AS7265X::selectDevice(uint8_t device)
 //Enable the onboard indicator LED
 void AS7265X::enableIndicator()
 {
+  selectDevice(AS72651_NIR);
+
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value |= (1 << 0); //Set the bit
 
-  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
 //Disable the onboard indicator LED
 void AS7265X::disableIndicator()
 {
+  selectDevice(AS72651_NIR);
+
   //Read, mask/set, write
   uint8_t value = virtualReadRegister(AS7265X_LED_CONFIG);
   value &= ~(1 << 0); //Clear the bit
 
-  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value);
 }
 
 //Set the current limit of onboard LED. Default is max 8mA = 0b11.
 void AS7265X::setIndicatorCurrent(uint8_t current)
 {
+  selectDevice(AS72651_NIR);
+
   if (current > 0b11)
     current = 0b11;
   //Read, mask/set, write
@@ -484,7 +488,6 @@ void AS7265X::setIndicatorCurrent(uint8_t current)
   value &= 0b11111001;                                     //Clear ICL_IND bits
   value |= (current << 1);                                 //Set ICL_IND bits with user's choice
 
-  selectDevice(AS72651_NIR);
   virtualWriteRegister(AS7265X_LED_CONFIG, value); //Write
 }
 
