@@ -202,6 +202,7 @@ private:
 
   uint8_t readRegister(uint8_t addr);
   boolean writeRegister(uint8_t addr, uint8_t val);
+  uint16_t maxWaitTime = 0; //Based on integration cycles
 };
 
 #endif
