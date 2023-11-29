@@ -588,7 +588,7 @@ void AS7265X::virtualWriteRegister(uint8_t virtualAddr, uint8_t dataToWrite)
   writeRegister(AS7265X_WRITE_REG, (virtualAddr | 1 << 7));
 
   //Wait for WRITE register to be empty
-  startTime = 0;
+  startTime = millis();
   while (1)
   {
     if(millis() - startTime > maxWaitTime) return; //Sensor failed to respond
