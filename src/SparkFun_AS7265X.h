@@ -202,7 +202,11 @@ private:
 
   uint8_t readRegister(uint8_t addr);
   boolean writeRegister(uint8_t addr, uint8_t val);
-  uint16_t maxWaitTime = 0; //Based on integration cycles
+
+  //Integration time is 2.8 * integration cycles.
+  //We will wait for integration time + 50%
+  //Since maximum number of integration cycles is 255, absolute max wait time is 2.8 * 255 * 1.5 = 1071
+  uint16_t maxWaitTime = 1071;
 };
 
 #endif
