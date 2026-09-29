@@ -374,12 +374,18 @@ void AS7265X::setGain(uint8_t gain)
   virtualWriteRegister(AS7265X_CONFIG, value);         //Write
 }
 
-//Sets the integration cycle amount
+//Sets the number of integration cycles.
 //Give this function a byte from 0 to 255.
-//Time will be 2.8ms * [integration cycles + 1]
+//Measurement time is 2.8ms per cycle per bank.
+//Six-channel measurements (modes 2 and 3) use two banks,
+//and so require twice the single-bank measurment time, 5.6ms per cycle.
 void AS7265X::setIntegrationCycles(uint8_t cycleValue)
 {
-  maxWaitTime = (int)(cycleValue * 2.8 * 1.5) + 1; //Wait for integration time + 50%
+  //Work in tenths of a millisecond and round up to avoid floating-point arithmetic.
+  uint16_t measurementTime = (uint16_t)(((uint32_t)cycleValue * 56UL + 9UL) / 10UL);
+
+  maxWaitTime = measurementTime + AS7265X_MEASUREMENT_TIMEOUT_MARGIN;
+
   virtualWriteRegister(AS7265X_INTERGRATION_TIME, cycleValue); //Write
 }
 
@@ -543,7 +549,7 @@ uint8_t AS7265X::virtualReadRegister(uint8_t virtualAddr)
   unsigned long startTime = millis();
   while (1)
   {
-    if(millis() - startTime > maxWaitTime) return(0); //Sensor failed to respond
+    if(millis() - startTime > AS7265X_VIRTUAL_REGISTER_TIMEOUT) return(0); //Sensor failed to respond
     status = readRegister(AS7265X_STATUS_REG);
     if ((status & AS7265X_TX_VALID) == 0)
       break; // If TX bit is clear, it is ok to write
@@ -557,7 +563,7 @@ uint8_t AS7265X::virtualReadRegister(uint8_t virtualAddr)
   startTime = millis();
   while (1)
   {
-    if(millis() - startTime > maxWaitTime) return(0); //Sensor failed to respond
+    if(millis() - startTime > AS7265X_VIRTUAL_REGISTER_TIMEOUT) return(0); //Sensor failed to respond
     status = readRegister(AS7265X_STATUS_REG);
     if ((status & AS7265X_RX_VALID) != 0)
       break; // Read data is ready.
@@ -577,7 +583,7 @@ void AS7265X::virtualWriteRegister(uint8_t virtualAddr, uint8_t dataToWrite)
   unsigned long startTime = millis();
   while (1)
   {
-    if(millis() - startTime > maxWaitTime) return; //Sensor failed to respond
+    if(millis() - startTime > AS7265X_VIRTUAL_REGISTER_TIMEOUT) return; //Sensor failed to respond
     status = readRegister(AS7265X_STATUS_REG);
     if ((status & AS7265X_TX_VALID) == 0)
       break; // No inbound TX pending at slave. Okay to write now.
@@ -591,7 +597,7 @@ void AS7265X::virtualWriteRegister(uint8_t virtualAddr, uint8_t dataToWrite)
   startTime = millis();
   while (1)
   {
-    if(millis() - startTime > maxWaitTime) return; //Sensor failed to respond
+    if(millis() - startTime > AS7265X_VIRTUAL_REGISTER_TIMEOUT) return; //Sensor failed to respond
     status = readRegister(AS7265X_STATUS_REG);
     if ((status & AS7265X_TX_VALID) == 0)
       break; // No inbound TX pending at slave. Okay to write now.
